@@ -100,7 +100,13 @@ class Lexer:
     t_ignore = '\n \t '
 
     def t_ERROR(self, t):
-        r'[0-9]+[_a-zA-Z]+'
+        r'[0-9]+[a-zA-Z_]+|[A-Z][a-zA-Z0-9_]*|\d+\.\d+\.[\.\d]*|[\+\-\*\/]+(\s)*[\+\-\*\/]+[\+\-\*\/ ]*|\d{10,}[\d\.]*'
+        t.type = reserved.get(t.value, 'ERROR')    # Check for reserved words like True
+        # first checks the id start with number or not
+        # second checks the id start with upper case or not
+        # third checks the float number has more than one floating point
+        # forth checks the tow operator together 
+        # 5th checks the length 10 in digits
         return t
 
     def t_newline(self, t):
@@ -120,6 +126,10 @@ class Lexer:
     def t_INTEGERNUMBER(self, t):
         r'\d{1,9}'
         t.value = int(t.value)
+        return t
+
+    def t_error(self, t):
+        print("Illegal character '%s'" % t.value[0])
         return t
 
     '''
