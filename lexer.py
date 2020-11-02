@@ -61,11 +61,34 @@ class Lexer:
         'SEMICOLON', 'COLON', 'COMMA', 'ERROR!'
     ] + list(reserved.values())
 
+    # Regular expression rules for simple tokens
+
+    r'''
+    PLY DOC:
+    To discard a token, such as a comment, simply define a token rule that returns no value. For example:
+
+    def t_COMMENT(t):
+            r'\#.*'
+            pass
+            # No return value. Token discarded
+
+    Alternatively, you can include the prefix "ignore_" in the token declaration to force a token to be ignored. For example:
+
+    t_ignore_COMMENT = r'\#.*'
     '''
-    Docs of ply:
+    t_ignore = '\n \t '
+
+    def t_newline(self, t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
+
+    '''
+    PLY DOC:
     When building the master regular expression, rules are added in the following order:
 
     All tokens defined by functions are added in the same order as they appear in the lexer file.
     Tokens defined by strings are added next by sorting them in order of decreasing regular expression length (longer expressions are added first).
     Without this ordering, it can be difficult to correctly match certain types of tokens. For example, if you wanted to have separate tokens for "=" and "==", you need to make sure that "==" is checked first. By sorting regular expressions in order of decreasing length, this problem is solved for rules defined as strings. For functions, the order can be explicitly controlled since rules appearing first are checked first.    
     '''
+
+    # TODO read the secion 4.4 from token values.
