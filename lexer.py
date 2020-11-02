@@ -62,6 +62,27 @@ class Lexer:
     ] + list(reserved.values())
 
     # Regular expression rules for simple tokens
+    t_EQ = r'=='  # before than assign
+    t_ASSIGN = r'='
+    t_SUM = r'\+'
+    t_SUB = r'\-'
+    t_MUL = r'\*'
+    t_DIV = r'\/'
+    t_MOD = r'%'
+    t_GT = r'>'
+    t_GE = r'>='
+    t_LT = r'<'
+    t_LE = r'<='
+    t_NE = r'!='
+    t_LCB = r'\{'
+    t_RCB = r'\}'
+    t_LRB = r'\('
+    t_RRB = r'\)'
+    t_LSB = r'\['
+    t_RSB = r'\]'
+    t_SEMICOLON = r';'
+    t_COLON = r':'
+    t_COMMA = r','
 
     r'''
     PLY DOC:
