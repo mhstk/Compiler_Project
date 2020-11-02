@@ -122,7 +122,6 @@ class Lexer:
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
-    
     '''
     PLY DOC:
     When building the master regular expression, rules are added in the following order:
@@ -131,5 +130,9 @@ class Lexer:
     Tokens defined by strings are added next by sorting them in order of decreasing regular expression length (longer expressions are added first).
     Without this ordering, it can be difficult to correctly match certain types of tokens. For example, if you wanted to have separate tokens for "=" and "==", you need to make sure that "==" is checked first. By sorting regular expressions in order of decreasing length, this problem is solved for rules defined as strings. For functions, the order can be explicitly controlled since rules appearing first are checked first.    
     '''
+
+    def build(self, **kwargs):
+        self.lexer = lex.lex(module=self, **kwargs)
+        return self.lexer
 
     # TODO read the secion 4.4 from token values.
