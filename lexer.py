@@ -103,6 +103,11 @@ class Lexer:
         r'\n+'
         t.lexer.lineno += len(t.value)
 
+    def t_ID(self, t):
+        r'[a-z_][a-zA-Z_0-9]*'
+        t.type = reserved.get(t.value,'ID')    # Check for reserved words
+        return t
+
     '''
     PLY DOC:
     When building the master regular expression, rules are added in the following order:
