@@ -69,9 +69,9 @@ class Lexer:
     t_MUL = r'\*'
     t_DIV = r'\/'
     t_MOD = r'%'
-    t_GE = r'>=' # before than t_GT
+    t_GE = r'>='  # before than t_GT
     t_GT = r'>'
-    t_LE = r'<=' # before than t_LT
+    t_LE = r'<='  # before than t_LT
     t_LT = r'<'
     t_NE = r'!='
     t_LCB = r'\{'
@@ -109,14 +109,18 @@ class Lexer:
         return t
 
     def t_INTEGERNUMBER(self, t):
-        r'\d{1,9}' 
-        t.value = int(t.value)  
+        r'\d{1,9}'
+        t.value = int(t.value)
         return t
 
     def t_FLOATNUMBER(self, t):
         r'\d{1,9}\.\d+'
         t.value = float(t.value)
         return t
+
+    def t_ERROR(self, t):
+        print("Illegal character '%s'" % t.value[0])
+        t.lexer.skip(1)
 
     
     '''
