@@ -10,25 +10,25 @@ from ply import lex
 
 class Lexer:
 
-    '''
-    PLY DOC:
-    To handle reserved words, you should write a single rule to match an identifier and do a special name lookup in a function like this:
-    reserved = {
-        'if' : 'IF',
-        'then' : 'THEN',
-        'else' : 'ELSE',
-        'while' : 'WHILE',
-        ...
-    }
+    ###
+    # PLY DOC:
+    # To handle reserved words, you should write a single rule to match an identifier and do a special name lookup in a function like this:
+    # reserved = {
+    # 'if' : 'IF',
+    # 'then' : 'THEN',
+    # 'else' : 'ELSE',
+    # 'while' : 'WHILE',
+    # ...
+    # }
 
-    tokens = ['LPAREN','RPAREN',...,'ID'] + list(reserved.values())
+    ### tokens = ['LPAREN','RPAREN',...,'ID'] + list(reserved.values())
 
-    def t_ID(t):
-        r'[a-zA-Z_][a-zA-Z_0-9]*'
-        t.type = reserved.get(t.value,'ID')    # Check for reserved words
-        return t
-    '''
-
+    # def t_ID(t):
+    # r'[a-zA-Z_][a-zA-Z_0-9]*'
+    # t.type = reserved.get(t.value,'ID')    # Check for reserved words
+    # return t
+    ###
+    global reserved
     reserved = {
         'int': 'INTEGER',
         'float': 'FLOAT',
@@ -57,8 +57,8 @@ class Lexer:
         'ID', 'INTEGERNUMBER', 'FLOATNUMBER',
         'ASSIGN', 'SUM', 'SUB', 'MUL', 'DIV', 'MOD',
         'GT', 'GE', 'LT', 'LE', 'EQ', 'NE',
-        'LCB', 'RCB', 'LRB', 'RRB', 'LCB', 'RSB',
-        'SEMICOLON', 'COLON', 'COMMA', 'ERROR!'
+        'LCB', 'RCB', 'LRB', 'RRB', 'LSB', 'RSB',
+        'SEMICOLON', 'COLON', 'COMMA', 'ERROR'
     ] + list(reserved.values())
 
     # Regular expression rules for simple tokens
@@ -99,6 +99,10 @@ class Lexer:
     '''
     t_ignore = '\n \t '
 
+    def t_ERROR(self, t):
+        r'[0-9]+[_a-zA-Z]+'
+        return t
+
     def t_newline(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)
@@ -108,19 +112,15 @@ class Lexer:
         t.type = reserved.get(t.value, 'ID')    # Check for reserved words
         return t
 
-    def t_INTEGERNUMBER(self, t):
-        r'\d{1,9}'
-        t.value = int(t.value)
-        return t
-
     def t_FLOATNUMBER(self, t):
         r'\d{1,9}\.\d+'
         t.value = float(t.value)
         return t
 
-    def t_ERROR(self, t):
-        print("Illegal character '%s'" % t.value[0])
-        t.lexer.skip(1)
+    def t_INTEGERNUMBER(self, t):
+        r'\d{1,9}'
+        t.value = int(t.value)
+        return t
 
     '''
     PLY DOC:
