@@ -69,10 +69,10 @@ class Lexer:
     t_MUL = r'\*'
     t_DIV = r'\/'
     t_MOD = r'%'
+    t_GE = r'>=' # before than t_GT
     t_GT = r'>'
-    t_GE = r'>='
+    t_LE = r'<=' # before than t_LT
     t_LT = r'<'
-    t_LE = r'<='
     t_NE = r'!='
     t_LCB = r'\{'
     t_RCB = r'\}'
@@ -109,10 +109,16 @@ class Lexer:
         return t
 
     def t_INTEGERNUMBER(self, t):
-        r'\d{1,10}' 
+        r'\d{1,9}' 
         t.value = int(t.value)  
         return t
 
+    def t_FLOATNUMBER(self, t):
+        r'\d{1,9}\.\d+'
+        t.value = float(t.value)
+        return t
+
+    
     '''
     PLY DOC:
     When building the master regular expression, rules are added in the following order:
