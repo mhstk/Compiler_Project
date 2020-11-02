@@ -105,7 +105,12 @@ class Lexer:
 
     def t_ID(self, t):
         r'[a-z_][a-zA-Z_0-9]*'
-        t.type = reserved.get(t.value,'ID')    # Check for reserved words
+        t.type = reserved.get(t.value, 'ID')    # Check for reserved words
+        return t
+
+    def t_INTEGERNUMBER(self, t):
+        r'\d{1,10}' 
+        t.value = int(t.value)  
         return t
 
     '''
