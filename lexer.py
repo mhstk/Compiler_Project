@@ -130,7 +130,7 @@ class Lexer:
 
     def t_error(self, t):
         print("Illegal character '%s'" % t.value[0])
-        return t
+        t.lexer.skip(1)
 
     '''
     PLY DOC:
