@@ -9,13 +9,18 @@ class Parser:
         pass
 
     def p_program(self, p):
-        "program : declist MAIN LRB RRB block"
-        print("program : declist MAIN LRB RRB block")
+        'program : declist MAIN LRB RRB block'
+        print('program : declist MAIN LRB RRB block')
+
+    def p_declist(self, p):
+        'declist : dec'
+        '        | declist dec'
+        '        | '
+        print(f'declist and len is {len(p)}')
 
     def p_error(self,  p):
         print("SYNTAX ERROR : " + p.value)
         raise Exception('ParsingError: invalid grammar at ', p)
-
 
     def build(self, **kwargs):
         """build the parser"""
