@@ -5,24 +5,35 @@ from lexer import Lexer
 class Parser:
     tokens = Lexer().tokens
 
+    precedence = (
+        ('left','COMMA'),
+        ('right','ASSIGN'),
+        ('left','COLON', 'SEMICOLON'),
+        ('left', 'OR'),
+        ('left', 'AND'),
+        ('left', 'EQ', 'NE'),
+        ('left', 'GT', 'GE', 'LT', 'LE'),
+        ('left', 'SUM', 'SUB'),
+        ('left', 'MUL', 'DIV', 'MOD'),
+        ('right', 'NOT'),
+    )
+
     def __init__(self):
         pass
-
-    def print_args(self, p):
-        string = ''
-        for i in p:
-            string += str(i) + ' '
-        return string
 
     def p_program(self, p):
         'program : declist MAIN LRB RRB block'
         print('program : declist MAIN LRB RRB block')
 
     def p_declist(self, p):
-        'declist : dec'
-        '        | declist dec'
-        '        | '
-        print(f'declist and len is {len(p)}')
+        '''declist : declist dec
+                | '''
+        if len(p) == 2:
+            print('declist : dec')
+        elif len(p) == 3:
+            print('declist : declist dec')
+        else:
+            print('declist : ')
 
     def p_dec(self, p):
         '''dec : vardec 
@@ -60,7 +71,7 @@ class Parser:
         print('vardec : idlist COLON type SEMICOLON')
 
     def p_funcdec(self, p):
-        '''funcdec : FUNCTION LRB paramdecs RRB SEMICOLON type block 
+        '''funcdec : FUNCTION ID LRB paramdecs RRB COLON type block 
                    | FUNCTION ID LRB paramdecs RRB block'''
         if len(p) == 8:
             print('funcdec : FUNCTION LRB paramdecs RRB SEMICOLON type block')
@@ -84,7 +95,7 @@ class Parser:
             print('paramdecslist : paramdecslist COMMA paramdec')
 
     def p_paramdec(self, p):
-        '''paramdec : ID SEMICOLON type 
+        '''paramdec : ID COLON type 
                     | ID LSB RSB COLON type'''
         if len(p) == 4:
             print('paramdec : ID SEMICOLON type')
@@ -96,8 +107,7 @@ class Parser:
         print('block : LCB stmtlist RCB')
 
     def p_stmtlist(self, p):
-        '''stmtlist : stmt
-                    | stmtlist stmt
+        '''stmtlist : stmtlist stmt
                     | '''
         if len(p) == 2:
             print('stmtlist : stmt')
@@ -106,21 +116,13 @@ class Parser:
         else:
             print('stmtlist : ')
 
-    def p_lvalue(self, p):
-        '''lvalue : ID 
-                  | ID LSB exp RSB'''
-        if len(p) == 2:
-            print('lvalue : ID')
-        else:
-            print('lvalue : ID LSB exp RSB')
 
     def p_case(self, p):
         '''case : WHERE const COLON stmtlist'''
         print('case : WHERE const COLON stmtlist')
 
     def p_cases(self, p):
-        '''cases : case
-                 | cases case
+        '''cases : cases case
                  | '''
         if len(p) == 2:
             print('cases : case')
@@ -138,14 +140,13 @@ class Parser:
                 | ON LRB exp RRB LCB cases RCB SEMICOLON
                 | FOR LRB exp SEMICOLON exp SEMICOLON exp RRB stmt 
                 | FOR LRB ID IN ID RRB stmt
-                | IF LRB exp RRB stmt elseiflist 
+                | IF LRB exp RRB stmt elseiflist  
                 | IF LRB exp RRB stmt elseiflist ELSE stmt
                 | PRINT LRB ID RRB SEMICOLON'''
         print(f'stmt : {len(p)}')
 
     def p_elseiflist(self, p):
-        '''elseiflist : ELSEIF LRB exp RRB stmt 
-                      | elseiflist ELSEIF LRB exp RRB stmt
+        '''elseiflist : elseiflist ELSEIF LRB exp RRB stmt
                       | '''
         if len(p) == 6:
             print('elseiflist : ELSEIF LRB exp RRB stmt')
@@ -153,6 +154,15 @@ class Parser:
             print('elseiflist : elseiflist ELSEIF LRB exp RRB stmt')
         else:
             print('elseiflist : ')
+
+    def p_relop(self, p):
+        '''relop : GT 
+                 | LT
+                 | NE
+                 | EQ
+                 | LE
+                 | GE'''
+        print(f'relop : {p.slice[1].type}')
 
     def p_relopexp(self, p):
         '''relopexp : exp relop exp 
@@ -163,11 +173,19 @@ class Parser:
             print('relopexp : relopexp relop exp')
 
     def p_exp(self, p):
-        '''exp : lvalue ASSIGN exp 
-               | exp operator exp
+        '''exp : ID ASSIGN exp 
+               | ID LSB exp RSB ASSIGN exp 
+               | exp AND exp
+               | exp OR exp
+               | exp SUM exp
+               | exp SUB exp
+               | exp DIV exp
+               | exp MUL exp
+               | exp MOD exp
                | relopexp
                | const
-               | lvalue 
+               | ID LSB exp RSB 
+               | ID  
                | ID LRB explist RRB 
                | LRB exp RRB
                | ID LRB RRB 
@@ -175,15 +193,6 @@ class Parser:
                | NOT exp'''
         print(f'exp : {len(p)}')
 
-    def p_operator(self, p):
-        '''operator : AND 
-                    | OR
-                    | SUM
-                    | SUB
-                    | MUL
-                    | DIV
-                    | MOD'''
-        print(f'operator : {p.slice[1].type}')
 
     def p_const(self, p):
         '''const : INTEGERNUMBER 
@@ -192,14 +201,7 @@ class Parser:
                  | FALSE'''
         print(f'const : {p.slice[1].type}')
 
-    def p_relop(self, p):
-        '''relop : GT 
-                 | LT
-                 | NE
-                 | EQ
-                 | LE
-                 | GE'''
-        print(f'relop : {p.slice[1].type}')
+    
 
     def p_explist(self, p):
         '''explist : exp 
