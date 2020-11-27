@@ -6,9 +6,9 @@ class Parser:
     tokens = Lexer().tokens
 
     precedence = (
-        ('left','COMMA'),
-        ('right','ASSIGN'),
-        ('left','COLON', 'SEMICOLON'),
+        ('left', 'COMMA'),
+        ('right', 'ASSIGN'),
+        ('left', 'COLON', 'SEMICOLON'),
         ('left', 'OR'),
         ('left', 'AND'),
         ('left', 'EQ', 'NE'),
@@ -18,118 +18,90 @@ class Parser:
         ('right', 'NOT'),
     )
 
+    def print_rule(self, p):
+
+        print(f'{p.slice[0].type} : ', end='')
+        for i, _ in enumerate(p):
+            if i == 0:
+                continue
+            print(f'{p.slice[i].type}' , end=' ')
+        print()
+
     def __init__(self):
         pass
 
     def p_program(self, p):
         'program : declist MAIN LRB RRB block'
-        print('program : declist MAIN LRB RRB block')
+        self.print_rule(p)
 
     def p_declist(self, p):
         '''declist : declist dec
                 | '''
-        if len(p) == 2:
-            print('declist : dec')
-        elif len(p) == 3:
-            print('declist : declist dec')
-        else:
-            print('declist : ')
-
+        self.print_rule(p)
+   
     def p_dec(self, p):
         '''dec : vardec 
                | funcdec'''
-        print(f'dec and len is {len(p)}')
-
+        self.print_rule(p)
+   
     def p_type(self, p):
         '''type : INTEGER
                 | FLOAT
                 | BOOLEAN'''
-        print(f'type and len is {len(p)}')
+        self.print_rule(p)
 
     def p_iddec(self, p):
         '''iddec : ID
                  | ID LSB exp RSB
                  | ID ASSIGN exp'''
-
-        if len(p) == 2:
-            print('iddec : ID')
-        elif len(p) == 5:
-            print('iddec : ID LSB exp RSB')
-        else:
-            print('iddec : ID ASSIGN exp')
+        self.print_rule(p)
 
     def p_idlist(self, p):
         '''idlist : iddec 
                   | idlist COMMA iddec'''
-        if len(p) == 2:
-            print('idlist : iddec')
-        else:
-            print('idlist : idlist COMMA iddec')
+        self.print_rule(p)
 
     def p_vardec(self, p):
         '''vardec : idlist COLON type SEMICOLON'''
-        print('vardec : idlist COLON type SEMICOLON')
+        self.print_rule(p)
 
     def p_funcdec(self, p):
         '''funcdec : FUNCTION ID LRB paramdecs RRB COLON type block 
                    | FUNCTION ID LRB paramdecs RRB block'''
-        if len(p) == 8:
-            print('funcdec : FUNCTION LRB paramdecs RRB SEMICOLON type block')
-        else:
-            print('funcdec : FUNCTION ID LRB paramdecs RRB block')
+        self.print_rule(p)
 
     def p_paramdecs(self, p):
         '''paramdecs : paramdecslist
                      | '''
-        if len(p) == 2:
-            print('paramdecs : paramdecslist')
-        else:
-            print('paramdecs : ')
+        self.print_rule(p)
 
     def p_paramdecslist(self, p):
         '''paramdecslist : paramdec
                          | paramdecslist COMMA paramdec'''
-        if len(p) == 2:
-            print('paramdecslist : paramdec')
-        else:
-            print('paramdecslist : paramdecslist COMMA paramdec')
-
+        self.print_rule(p)
+        
     def p_paramdec(self, p):
         '''paramdec : ID COLON type 
                     | ID LSB RSB COLON type'''
-        if len(p) == 4:
-            print('paramdec : ID SEMICOLON type')
-        else:
-            print('paramdec : ID LSB RSB COLON type')
-
+        self.print_rule(p)
+        
     def p_block(self, p):
         '''block : LCB stmtlist RCB'''
-        print('block : LCB stmtlist RCB')
-
+        self.print_rule(p)
+        
     def p_stmtlist(self, p):
         '''stmtlist : stmtlist stmt
                     | '''
-        if len(p) == 2:
-            print('stmtlist : stmt')
-        elif len(p) == 3:
-            print('stmtlist : stmtlist stmt')
-        else:
-            print('stmtlist : ')
-
-
+        self.print_rule(p)
+        
     def p_case(self, p):
         '''case : WHERE const COLON stmtlist'''
-        print('case : WHERE const COLON stmtlist')
+        self.print_rule(p)
 
     def p_cases(self, p):
         '''cases : cases case
                  | '''
-        if len(p) == 2:
-            print('cases : case')
-        elif len(p) == 3:
-            print('cases : cases case')
-        else:
-            print('cases : ')
+        self.print_rule(p)
 
     def p_stmt(self, p):
         '''stmt : RETURN exp SEMICOLON 
@@ -143,77 +115,82 @@ class Parser:
                 | IF LRB exp RRB stmt elseiflist  
                 | IF LRB exp RRB stmt elseiflist ELSE stmt
                 | PRINT LRB ID RRB SEMICOLON'''
-        print(f'stmt : {len(p)}')
+        self.print_rule(p)
 
     def p_elseiflist(self, p):
         '''elseiflist : elseiflist ELSEIF LRB exp RRB stmt
                       | '''
-        if len(p) == 6:
-            print('elseiflist : ELSEIF LRB exp RRB stmt')
-        elif len(p) == 7:
-            print('elseiflist : elseiflist ELSEIF LRB exp RRB stmt')
-        else:
-            print('elseiflist : ')
+        self.print_rule(p)
+        
+    # def p_relop(self, p):
+    #     '''relop : GT 
+    #              | LT
+    #              | NE
+    #              | EQ
+    #              | LE
+    #              | GE'''
+    #     
 
-    def p_relop(self, p):
-        '''relop : GT 
-                 | LT
-                 | NE
-                 | EQ
-                 | LE
-                 | GE'''
-        print(f'relop : {p.slice[1].type}')
+    # def p_relopexp(self, p):
+    #     '''relopexp : exp GT exp 
+    #                 | exp LT exp
+    #                 | exp NE exp
+    #                 | exp EQ exp
+    #                 | exp LE exp
+    #                 | exp GE exp
+    #                 | relopexp GT exp
+    #                 | relopexp LT exp
+    #                 | relopexp NE exp
+    #                 | relopexp EQ exp
+    #                 | relopexp LE exp
+    #                 | relopexp GE exp '''
+    #     if len(p) == 4:
+    #         print('relopexp : exp relop exp')
+    #     else:
+    #         print('relopexp : relopexp relop exp')
 
-    def p_relopexp(self, p):
-        '''relopexp : exp relop exp 
-                    | relopexp relop exp'''
-        if len(p) == 4:
-            print('relopexp : exp relop exp')
-        else:
-            print('relopexp : relopexp relop exp')
-
+    ## need to merge p_relop and p_relopexp and p_exp 
     def p_exp(self, p):
-        '''exp : ID ASSIGN exp 
-               | ID LSB exp RSB ASSIGN exp 
-               | exp AND exp
-               | exp OR exp
-               | exp SUM exp
-               | exp SUB exp
-               | exp DIV exp
-               | exp MUL exp
-               | exp MOD exp
-               | relopexp
-               | const
-               | ID LSB exp RSB 
-               | ID  
-               | ID LRB explist RRB 
-               | LRB exp RRB
-               | ID LRB RRB 
-               | SUB exp 
-               | NOT exp'''
-        print(f'exp : {len(p)}')
-
+        '''exp  : ID ASSIGN exp 
+                | ID LSB exp RSB ASSIGN exp 
+                | exp AND exp
+                | exp OR exp
+                | exp SUM exp
+                | exp SUB exp
+                | exp DIV exp
+                | exp MUL exp
+                | exp MOD exp
+                | exp GT exp 
+                | exp LT exp
+                | exp NE exp
+                | exp EQ exp
+                | exp LE exp
+                | exp GE exp
+                | const
+                | ID LSB exp RSB 
+                | ID  
+                | ID LRB explist RRB 
+                | LRB exp RRB
+                | ID LRB RRB 
+                | SUB exp 
+                | NOT exp'''
+        self.print_rule(p)
 
     def p_const(self, p):
         '''const : INTEGERNUMBER 
                  | FLOATNUMBER
                  | TRUE
                  | FALSE'''
-        print(f'const : {p.slice[1].type}')
-
-    
+        self.print_rule(p)
 
     def p_explist(self, p):
         '''explist : exp 
                    | explist COMMA exp'''
-        if len(p) == 2:
-            print('explist : exp')
-        else:
-            print('explist : explist COMMA exp')
+        self.print_rule(p)
 
     def p_error(self,  p):
         print("SYNTAX ERROR : " + p.value)
-        # raise Exception('ParsingError: invalid grammar at ', p)
+        self.print_rule(p)
 
     def build(self, **kwargs):
         """build the parser"""
