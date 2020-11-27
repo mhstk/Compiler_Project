@@ -15,16 +15,18 @@ class Parser:
         ('left', 'GT', 'GE', 'LT', 'LE'),
         ('left', 'SUM', 'SUB'),
         ('left', 'MUL', 'DIV', 'MOD'),
-        ('right', 'NOT'),
+        ('left', 'NOT'),
+        ('left', 'IF_NOT_ELSE'),
+        ('left', 'ELSE', 'ELSEIF'),
     )
 
     def print_rule(self, p):
 
-        print(f'{p.slice[0].type} : ', end='')
         for i, _ in enumerate(p):
             if i == 0:
-                continue
-            print(f'{p.slice[i].type}' , end=' ')
+                print(f'{p.slice[i].type} : ', end='')
+            else:
+                print(f'{p.slice[i].type}' , end=' ')
         print()
 
     def __init__(self):
@@ -112,7 +114,7 @@ class Parser:
                 | ON LRB exp RRB LCB cases RCB SEMICOLON
                 | FOR LRB exp SEMICOLON exp SEMICOLON exp RRB stmt 
                 | FOR LRB ID IN ID RRB stmt
-                | IF LRB exp RRB stmt elseiflist  
+                | IF LRB exp RRB stmt elseiflist %prec IF_NOT_ELSE
                 | IF LRB exp RRB stmt elseiflist ELSE stmt
                 | PRINT LRB ID RRB SEMICOLON'''
         self.print_rule(p)
@@ -121,34 +123,7 @@ class Parser:
         '''elseiflist : elseiflist ELSEIF LRB exp RRB stmt
                       | '''
         self.print_rule(p)
-        
-    # def p_relop(self, p):
-    #     '''relop : GT 
-    #              | LT
-    #              | NE
-    #              | EQ
-    #              | LE
-    #              | GE'''
-    #     
-
-    # def p_relopexp(self, p):
-    #     '''relopexp : exp GT exp 
-    #                 | exp LT exp
-    #                 | exp NE exp
-    #                 | exp EQ exp
-    #                 | exp LE exp
-    #                 | exp GE exp
-    #                 | relopexp GT exp
-    #                 | relopexp LT exp
-    #                 | relopexp NE exp
-    #                 | relopexp EQ exp
-    #                 | relopexp LE exp
-    #                 | relopexp GE exp '''
-    #     if len(p) == 4:
-    #         print('relopexp : exp relop exp')
-    #     else:
-    #         print('relopexp : relopexp relop exp')
-
+  
     ## need to merge p_relop and p_relopexp and p_exp 
     def p_exp(self, p):
         '''exp  : ID ASSIGN exp 
